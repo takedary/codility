@@ -31,20 +31,9 @@ def slow_solution(A):
 
 
 if __name__ == '__main__':
-  #cases = [
-  #    [3, 2, 6, -1, 4, 5, -1, 2],
-  #    [3, 2, -6, -1, 4, 5, -1],
-  #    [-3, -2, -6, -1, -4, 5, -1],
-  #    [random.randrange(-10, 10) for _ in range(6)],
-  #    [random.randrange(-10, 10) for _ in range(6)],
-  #    [random.randrange(-10, 10) for _ in range(6)]
-  #]
-  #cases = [[-1, -6, 7, -4, 2, -7]]
-  #for c in cases:
-  #  print(c)
-  #  print('answer:', solution(c), 'slow:', slow_solution(c))
-  cases = [[random.randrange(-1000, 1000) for i in range(70)]
-           for j in range(100)]
+  cases = [[random.randrange(-10, 10) for i in range(5)] for j in range(10)]
   for c in cases:
-    if solution(c) != slow_solution(c):
-      print(c, 'answer:', solution(c), 'slow:', slow_solution(c))
+    print(c)
+    print(solution(c))
+    #if solution(c) != slow_solution(c):
+    #  print(c, 'answer:', solution(c), 'slow:', slow_solution(c))
