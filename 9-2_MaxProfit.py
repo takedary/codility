@@ -13,19 +13,16 @@ def solution(A):
 
   mina = sys.maxsize
   max_profit = -sys.maxsize
-  for i, a in enumerate(A):
+  for a, maxa in zip(A, pref_maxa):
     if a < mina:
       mina = a
-    if pref_maxa[i] - mina > max_profit:
-      max_profit = pref_maxa[i] - mina
+    if maxa - mina > max_profit:
+      max_profit = maxa - mina
   return max(0, max_profit)
 
 
 if __name__ == '__main__':
-  cases = [[random.randrange(-10, 10) for i in range(5)]
-           for j in range(10)]
+  cases = [[random.randrange(-10, 10) for i in range(5)] for j in range(10)]
   for c in cases:
     print(c)
     print(solution(c))
-    #if solution(c) != slow_solution(c):
-    #  print(c, 'answer:', solution(c), 'slow:', slow_solution(c))
