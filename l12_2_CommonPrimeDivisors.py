@@ -2,38 +2,38 @@ from functools import reduce
 import math
 
 
+def gcd(a, b):
+  if a < b:
+    a, b = b, a
+
+  if a % b == 0:
+    return b
+  return gcd(b, a % b)
+
+def has_super_primefactors(a, b):
+  """
+  return True if prime factor set of a is a superset of that of b
+  e.g.
+    True if
+      a = 30 = 2^1 x 3^1 x 5^1 and
+      b = 18 = 2^1 x 3^2
+    True if
+      a = 18 = 2^1 x 3^2 and
+      b = 24 = 2^3 x 3^1
+    False if
+      a = 27 = 3^3 and
+      b = 24 = 2^3 x 3^1
+  """
+  print('has_super_primefactors', f'{(a, b) = }')
+  if a % b == 0:
+    return True
+
+  g = gcd(a, b)
+  if g == 1:
+    return False
+  return has_super_primefactors(g, b//g)
+
 def solution(A, B):
-  def gcd(a, b):
-    if a < b:
-      a, b = b, a
-
-    if a % b == 0:
-      return b
-    return gcd(b, a % b)
-
-  def has_super_primefactors(a, b):
-    """
-    return True if prime factor set of a is a superset of that of b
-    e.g.
-      True if
-        a = 30 = 2^1 x 3^1 x 5^1 and
-        b = 18 = 2^1 x 3^2
-      True if
-        a = 18 = 2^1 x 3^2 and
-        b = 24 = 2^3 x 3^1
-      False if
-        a = 27 = 3^3 and
-        b = 24 = 2^3 x 3^1
-    """
-    print('has_super_primefactors', f'{(a, b) = }')
-    if a % b == 0:
-      return True
-
-    g = gcd(a, b)
-    if g == 1:
-      return False
-    return has_super_primefactors(g, b//g)
-
   def the_same(a, b):
     print('the_same', f'{(a, b) = }')
     if a == b:
@@ -47,6 +47,10 @@ def solution(A, B):
     return has_super_primefactors(g, a//g) and has_super_primefactors(g, b//g)
 
   return sum(the_same(a, b) for a, b in zip(A, B))
+
+def another_solution(A, B):
+  return sum(has_super_primefactors(a, b) and has_super_primefactors(b, a)
+             for a, b in zip(A, B))
 
 
 def slow_solution(A, B):
@@ -126,3 +130,4 @@ if __name__ == '__main__':
     print('\n', c)
     #print(f'{slow_solution(*c) = }')
     print(f'{solution(*c) = }')
+    print(f'{another_solution(*c) = }')
