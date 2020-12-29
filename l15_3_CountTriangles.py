@@ -10,13 +10,9 @@ def solution(A):
     r = p + 2
     for q, b in enumerate(A[p+1:-1], p+1):
       apb = a + b
-      r = max(r, q + 1)
-      count += r - q - 1
-      while apb > A[r]:
-        count += 1
-        if r == N - 1:
-          break
+      while r < N and apb > A[r]:
         r += 1
+      count += r - q - 1
       #print(p, q, r, count)
 
   return count
