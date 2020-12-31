@@ -1,8 +1,67 @@
+from collections import Counter
 from collections import defaultdict
 import sys
 
 
 def solution(A):
+  """
+  pull-based, dict, 2d dp
+  dp(i, w) means num of as used to make w
+  """
+  if not A:
+    return 0
+
+  N = len(A)
+  if N == 1:
+    return abs(A[0])
+
+  A = [abs(a) for a in A]
+  W = sum(A)
+
+  d = Counter(A)
+  M = len(d)
+
+  dp = {(i, 0): 0 for i in range(N + 1)}
+  for i, (a, count) in enumerate(d.items(), 1):
+    for w in range(1, W//2 + 1):
+      if (i-1, w) in dp:
+        dp[i, w] = 0
+      elif w - a >= 0 and dp.get((i, w - a), count) < count:
+        dp[i, w] = dp[i, w - a] + 1
+
+  return W - 2 * max(w for i, w in dp.keys() if i == M)
+
+
+def solution_push(A):
+  """
+  push-based, dict, 2d dp
+  dp(i, w) means num of as used to make w
+  """
+  if not A:
+    return 0
+
+  N = len(A)
+  if N == 1:
+    return abs(A[0])
+
+  A = [abs(a) for a in A]
+  W = sum(A)
+
+  d = Counter(A)
+  M = len(d)
+
+  dp = {(i, 0): 0 for i in range(N + 1)}
+  for i, (a, count) in enumerate(d.items(), 1):
+    for w in range(W//2 + 1):
+      if (i-1, w) in dp:
+        dp[i, w] = 0
+      if dp.get((i, w), count) < count and w + a <= W//2:
+        dp[i, w+a] = dp[i, w] + 1
+
+  return W - 2 * max(w for i, w in dp.keys() if i == M)
+
+
+def solution_list(A):
   def print_dp():
     print('  ', ' '.join('{:2d}'.format(j) for j in range(W + 1)))
     for a, r in zip([0] + list(d.keys()), dp):
@@ -24,16 +83,16 @@ def solution(A):
     d[a] += 1
   M = len(d)
 
-  dp = [[0] + [sys.maxsize] * W for _ in range(M + 1)]
+  dp = [[0] + [sys.maxsize] * (W//2) for _ in range(M + 1)]
   for i, (a, count) in enumerate(d.items(), 1):
     # dp[i][w]: how many a used to make w
-    for w in range(W + 1):
+    for w in range(W//2 + 1):
       if dp[i-1][w] < sys.maxsize:
         dp[i][w] = 0
-      if dp[i][w] < count and w + a <= W:
+      if dp[i][w] < count and w + a <= W//2:
         dp[i][w+a] = min(dp[i][w+a], dp[i][w] + 1)
 
-  print_dp()
+  #print_dp()
 
   for w in range(W//2, -1, -1):
     if dp[M][w] < sys.maxsize:
@@ -116,20 +175,22 @@ def super_slow_solution(A):
 if __name__ == '__main__':
   from random import randrange
 
+  cases2 = [([randrange(-10, 10) for _ in range(10)],) for _ in range(100)]
+  for c in cases2:
+    if solution(*c) == solution_push(*c) == solution_list(*c) == slow_solution(*c) == still_slow_solution(*c) == super_slow_solution(*c):
+      continue
+    print(f'\n{c = }')
+    print(f'{solution(*c) = }')
+    print(f'{super_slow_solution(*c) = }')
+
   cases = [
       ([3, 9, 4],),
       ([-3, -9, 4],),
   ]
   for _ in range(5):
     cases.append(([randrange(-3, 3) for _ in range(3)],))
-  #for _ in range(100):
-  #  cases.append(([randrange(-10, 10) for _ in range(10)],))
 
   for c in cases:
-    #if still_slow_solution(*c) == slow_solution(*c) == super_slow_solution(*c):
-    #  continue
     print(f'\n{c = }')
     print(f'{solution(*c) = }')
-    print(f'{slow_solution(*c) = }')
-    print(f'{still_slow_solution(*c) = }')
     print(f'{super_slow_solution(*c) = }')
