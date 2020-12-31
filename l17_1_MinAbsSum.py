@@ -8,11 +8,17 @@ def solution(A):
   pull-based, dict, 2d dp
   dp(i, w) means num of as used to make w
   """
+  def print_dp():
+    print('  ', ' '.join('{:2d}'.format(w) for w in range(W//2 + 1)))
+    for i, a in enumerate([0] + list(d.keys())):
+      row = ('{:2d}'.format(dp[i, w]) if (i, w) in dp else '  '
+             for w in range(W//2 + 1))
+      print('{:2d}'.format(a), ' '.join(row))
+
   if not A:
     return 0
 
-  N = len(A)
-  if N == 1:
+  if len(A) == 1:
     return abs(A[0])
 
   A = [abs(a) for a in A]
@@ -21,7 +27,7 @@ def solution(A):
   d = Counter(A)
   M = len(d)
 
-  dp = {(i, 0): 0 for i in range(N + 1)}
+  dp = {(i, 0): 0 for i in range(M + 1)}
   for i, (a, count) in enumerate(d.items(), 1):
     for w in range(1, W//2 + 1):
       if (i-1, w) in dp:
@@ -29,6 +35,7 @@ def solution(A):
       elif w - a >= 0 and dp.get((i, w - a), count) < count:
         dp[i, w] = dp[i, w - a] + 1
 
+  #print_dp()
   return W - 2 * max(w for i, w in dp.keys() if i == M)
 
 
@@ -40,8 +47,7 @@ def solution_push(A):
   if not A:
     return 0
 
-  N = len(A)
-  if N == 1:
+  if len(A) == 1:
     return abs(A[0])
 
   A = [abs(a) for a in A]
@@ -50,7 +56,7 @@ def solution_push(A):
   d = Counter(A)
   M = len(d)
 
-  dp = {(i, 0): 0 for i in range(N + 1)}
+  dp = {(i, 0): 0 for i in range(M + 1)}
   for i, (a, count) in enumerate(d.items(), 1):
     for w in range(W//2 + 1):
       if (i-1, w) in dp:
@@ -176,6 +182,7 @@ if __name__ == '__main__':
   from random import randrange
 
   cases2 = [([randrange(-10, 10) for _ in range(10)],) for _ in range(100)]
+
   for c in cases2:
     if solution(*c) == solution_push(*c) == solution_list(*c) == slow_solution(*c) == still_slow_solution(*c) == super_slow_solution(*c):
       continue
@@ -189,6 +196,7 @@ if __name__ == '__main__':
   ]
   for _ in range(5):
     cases.append(([randrange(-3, 3) for _ in range(3)],))
+  cases.append(([randrange(-3, 3) for _ in range(10)],))
 
   for c in cases:
     print(f'\n{c = }')
