@@ -6,13 +6,13 @@ def solution(N, A):
   sector_counter = defaultdict(int)
   sector_max = 0
   for a in A:
-    if a == N + 1 and sector_counter:
+    if a <= N:
+      sector_counter[a] += 1
+      sector_max = max(sector_max, sector_counter[a])
+    elif sector_counter:
       max_count += sector_max
       sector_counter.clear()
       sector_max = 0
-    else:
-      sector_counter[a] += 1
-      sector_max = max(sector_max, sector_counter[a])
 
   return [max_count + sector_counter[k] for k in range(1, N+1)]
 
@@ -30,11 +30,17 @@ def slow_solution(N, A):
 
 
 if __name__ == '__main__':
+  from random import randrange
+
   cases = [
       (5, [3, 4, 4, 6, 1, 4, 4]),
       (5, [3, 4, 4, 6, 1, 1, 1, 6, 3]),
       (5, [6, 6]),
   ]
+  for _ in range(6):
+    N = randrange(1, 4)
+    cases.append((N, [randrange(1, N+2) for _ in range(randrange(1, 10))]))
+
   for c in cases:
     print(f'\n{c = }')
     print(f'{solution(*c) = }')
