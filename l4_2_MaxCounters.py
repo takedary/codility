@@ -30,6 +30,19 @@ def another_solution(N, A):
   return [max_count + sector_counter[k] for k in range(1, N+1)]
 
 
+def another_solution_2(N, A):
+  last_max, current_max = 0, 0
+  counter = defaultdict(int)
+  for a in A:
+    if a <= N:
+      counter[a] = max(counter[a], last_max) + 1
+      current_max = max(current_max, counter[a])
+    else:
+      last_max = current_max
+
+  return [max(last_max, counter[k]) for k in range(1, N+1)]
+
+
 def slow_solution(N, A):
   counter = {i: 0 for i in range(1, N+1)}
   for a in A:
@@ -58,4 +71,5 @@ if __name__ == '__main__':
     print(f'\n{c = }')
     print(f'{solution(*c) = }')
     print(f'{another_solution(*c) = }')
+    print(f'{another_solution_2(*c) = }')
     print(f'{slow_solution(*c) = }')
