@@ -33,12 +33,12 @@ def another_solution(N, A):
 def slow_solution(N, A):
   counter = {i: 0 for i in range(1, N+1)}
   for a in A:
-    if a == N + 1:
+    if a <= N:
+      counter[a] += 1
+    else:
       max_count = max(counter.values())
       for k in counter.keys():
         counter[k] = max_count
-    else:
-      counter[a] += 1
   return list(counter.values())
 
 
