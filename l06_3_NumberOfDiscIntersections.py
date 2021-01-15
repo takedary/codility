@@ -22,6 +22,29 @@ def solution(A):
   return intersections
 
 
+def better_solution(A):
+  """
+  O(N)
+  """
+  if not A:
+    return 0
+
+  N = len(A)
+  lefts, rights = [0] * N, [0] * N
+  for i, a in enumerate(A):
+    lefts[max(0, i - a)] += 1
+    rights[min(i + a, N - 1)] += 1
+
+  disks = 0
+  intersections = 0
+  for l, r in zip(lefts, rights):
+    intersections += l * (disks + (disks+l-1)) // 2
+    if intersections > 10**7:
+      return -1
+    disks += l - r
+  return intersections
+
+
 if __name__ == '__main__':
   cases = [
       ([1, 5, 2, 1, 4, 0],),
@@ -30,3 +53,4 @@ if __name__ == '__main__':
   for c in cases:
     print(f'\n{c = }')
     print(f'{solution(*c) = }')
+    print(f'{better_solution(*c) = }')
