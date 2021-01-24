@@ -19,6 +19,18 @@ def solution(A):
   return max(s1, s2)
 
 
+def another_solution(A):
+  ss = max(0, A[1])
+  sd = 0
+  max_sd = 0
+  for z in range(3, len(A)):
+    sd = max(sd + A[z-1], ss)
+    max_sd = max(max_sd, sd)
+    ss = max(ss + A[z-1], A[z-1], 0)
+
+  return max_sd
+
+
 def slow_solution(A):
   N = len(A)
   maxs = -sys.maxsize
