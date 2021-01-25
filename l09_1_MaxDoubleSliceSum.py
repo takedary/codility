@@ -4,30 +4,16 @@ import sys
 
 def solution(A):
   """
-  s1[n]: max sum of double slice such that Z < n
-  s2[n]: max sum of double slice such that Z = n
-  y[n]:  Y in s2[n]
-  s3[n]: max sum of single slice such that Z = n
+  sd[z]: max sum of double slice (X, Y, Z) such that Z = z
+  ss[z]: max sum of single slice (X, Y) such that Y = z
   """
-  s1 = s2 = 0
-  y = 1
-  s3 = max(0, A[1])
-  for i in range(3, len(A)):
-    s1 = max(s1, s2)
-    s2, y = sorted([(s2 + A[i-1], y), (0, i-1), (s3, i-1)])[-1]
-    s3 = max(s3 + A[i-1], A[i-1], 0)
-  return max(s1, s2)
-
-
-def another_solution(A):
-  ss = max(0, A[1])
   sd = 0
+  ss = max(0, A[1])
   max_sd = 0
   for z in range(3, len(A)):
     sd = max(sd + A[z-1], ss)
     max_sd = max(max_sd, sd)
     ss = max(ss + A[z-1], A[z-1], 0)
-
   return max_sd
 
 
