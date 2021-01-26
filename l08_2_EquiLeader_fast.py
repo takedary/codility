@@ -1,11 +1,28 @@
-from collections import Counter
+def bm_leader(A):
+  """Boyer–Moore majority vote algorithm."""
+  candidate = A[0]
+  count = 1
+  for a in A[1:]:
+    if a == candidate:
+      count += 1
+    else:
+      if count > 1:
+        count -= 1
+      else:
+        candidate = a
+        count = 1
+
+  cand_count = sum(a == candidate for a in A)
+  if cand_count <= len(A) // 2:
+    raise ValueError
+  return candidate, cand_count
 
 
 def solution(A):
   N = len(A)
-  c = Counter(A)
-  leader, count = c.most_common(1)[0]
-  if 2 * count <= N:
+  try:
+    leader, count = bm_leader(A)
+  except ValueError:
     return 0
 
   n_els = 0
