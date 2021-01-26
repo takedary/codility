@@ -20,10 +20,11 @@ def solution(A):
 
 if __name__ == '__main__':
   cases = [
-      [4, 3, 4, 4, 4, 2],
-      [0],
-      [0, 1],
-      [1, 2, 3, 4, 5]
+      ([4, 3, 4, 4, 4, 2],)
+      ([0],)
+      ([0, 1],)
+      ([1, 2, 3, 4, 5],)
   ]
   for c in cases:
-    print(c, solution(c))
+    print(f'\n{c = }')
+    print(f'{solution(*c) = }')
