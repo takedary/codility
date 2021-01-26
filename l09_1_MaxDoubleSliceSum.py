@@ -19,13 +19,11 @@ def solution(A):
 
 def slow_solution(A):
   N = len(A)
-  maxs = -sys.maxsize
+  maxsum = 0
   for x in range(N-2):
-    for y in range(x+1, N-1):
-      for z in range(y+1, N):
-        s = sum(A[x+1:y]) + sum(A[y+1:z])
-        maxs = max(s, maxs)
-  return maxs
+    for z in range(x+2, N):
+      maxsum = max(maxsum, sum(A[x+1:z]) - min(A[x+1:z]))
+  return maxsum
 
 
 if __name__ == '__main__':
