@@ -36,12 +36,19 @@ def solution(A):
 
 
 if __name__ == '__main__':
+  from random import choices, randrange
+
   cases = [
       ([4, 3, 4, 4, 4, 2],),
       ([0],),
       ([0, 1],),
       ([1, 2, 3, 4, 5],),
   ]
+  for _ in range(6):
+    N = randrange(1, 8)
+    c = (choices([-1, 0 , 1], k=N),)
+    cases.append(c)
+
   for c in cases:
     print(f'\n{c = }')
     print(f'{solution(*c) = }')
