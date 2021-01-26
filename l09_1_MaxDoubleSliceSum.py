@@ -1,4 +1,3 @@
-import random
 import sys
 
 
@@ -17,6 +16,26 @@ def solution(A):
   return max_sd
 
 
+def another_solution(A):
+  """
+  ss_l[y]: max sum of single slice (X, Y) such that Y = y
+  ss_r[y]: max sum of single slice (Y, Z) such that Y = y
+  """
+  N = len(A)
+  A = list(A)
+  A[0] = A[-1] = -sys.maxsize
+
+  ss_l = [0] * N
+  for y in range(1, N-1):
+    ss_l[y] = max(ss_l[y-1] + A[y-1], A[y-1], 0)
+
+  ss_r = [0] * N
+  for y in reversed(range(1, N-1)):
+    ss_r[y] = max(ss_r[y+1] + A[y+1], A[y+1], 0)
+
+  return max(l + r for l, r in zip(ss_l, ss_r))
+
+
 def slow_solution(A):
   N = len(A)
   maxsum = 0
@@ -27,9 +46,25 @@ def slow_solution(A):
 
 
 if __name__ == '__main__':
-  cases = [[random.randrange(-10, 10) for i in range(5)] for j in range(10)]
+  from random import randrange
+
+  cases = []
+  for _ in range(6):
+    N = randrange(3, 8)
+    c = ([randrange(-10, 10) for _ in range(N)],)
+    cases.append(c)
   for c in cases:
-    print(c)
-    print(solution(c))
-    #if solution(c) != slow_solution(c):
-    #  print(c, 'answer:', solution(c), 'slow:', slow_solution(c))
+    print(f'\n{c = }')
+    print(f'{solution(*c) = }')
+    print(f'{another_solution(*c) = }')
+    print(f'{slow_solution(*c) = }')
+
+  # collectness test
+  cases = []
+  for _ in range(600):
+    N = randrange(3, 100)
+    c = ([randrange(-N, N) for _ in range(N)],)
+    cases.append(c)
+  for c in cases:
+    if not solution(*c) == another_solution(*c) == slow_solution(*c):
+      print(f'\n{c = }')
