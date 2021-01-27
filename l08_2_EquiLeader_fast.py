@@ -41,6 +41,20 @@ def solution(A):
   return n_els
 
 
+def slow_solution(A):
+  n_els = 0  # num of equi leaders
+  for S in range(len(A) - 1):
+    try:
+      leader_l, _ = bm_leader(A[:S+1])
+      leader_r, _ = bm_leader(A[S+1:])
+    except ValueError:
+      continue
+
+    if leader_l == leader_r:
+      n_els += 1
+  return n_els
+
+
 if __name__ == '__main__':
   from random import choices, randrange
 
@@ -58,3 +72,4 @@ if __name__ == '__main__':
   for c in cases:
     print(f'\n{c = }')
     print(f'{solution(*c) = }')
+    print(f'{slow_solution(*c) = }')
