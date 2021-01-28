@@ -1,28 +1,23 @@
-import random
-import sys
+from itertools import accumulate
 
 
 def solution(A):
-  pref_maxa = []
-  maxa = -sys.maxsize
-  for a in reversed(A):
-    if a > maxa:
-      maxa = a
-    pref_maxa.append(maxa)
-  pref_maxa.reverse()
-
-  mina = sys.maxsize
-  max_profit = -sys.maxsize
-  for a, maxa in zip(A, pref_maxa):
-    if a < mina:
-      mina = a
-    if maxa - mina > max_profit:
-      max_profit = maxa - mina
-  return max(0, max_profit)
+  """Return max of (max(A[i:]) - A[i])."""
+  if not A:
+    return 0
+  pref_max = accumulate(reversed(A), max)
+  return max(pmax - a for pmax, a in zip(pref_max, reversed(A)))
 
 
 if __name__ == '__main__':
-  cases = [[random.randrange(-10, 10) for i in range(5)] for j in range(10)]
+  from random import randrange
+
+  cases = []
+  for _ in range(6):
+    N = randrange(5)
+    c = ([randrange(10) for _ in range(N)],)
+    cases.append(c)
+
   for c in cases:
-    print(c)
-    print(solution(c))
+    print(f'\n{c = }')
+    print(f'{solution(*c) = }')
