@@ -1,24 +1,28 @@
-import random
 import sys
 
 
 def solution(A):
-  m, maxm = -sys.maxsize, -sys.maxsize
+  ss = -sys.maxsize  # ss[q]: max sum of (P, Q) such that Q = q
+  max_ss = -sys.maxsize
   for a in A:
-    m = max(m + a, a)
-    maxm = max(m, maxm)
-  return maxm
+    ss = max(ss + a, a)
+    max_ss = max(ss, max_ss)
+  return max_ss
 
 
 if __name__ == '__main__':
+  from random import randrange
+
   cases = [
-      [1, 3, -5, 3],
-      [1],
-      [-2, -3, -3]
+      ([1, 3, -5, 3],),
+      ([1],),
+      ([-2, -3, -3],),
   ]
-  for _ in range(4):
-    cases.append([random.randrange(-10, 10) for i in range(5)])
+  for _ in range(6):
+    N = randrange(1, 5)
+    c = ([randrange(-10, 10) for _ in range(N)],)
+    cases.append(c)
 
   for c in cases:
-    print(c)
-    print(solution(c))
+    print(f'\n{c = }')
+    print(f'{solution(*c) = }')
