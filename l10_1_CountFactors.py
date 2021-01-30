@@ -1,17 +1,20 @@
+from math import sqrt
+
+
 def solution(N):
-  i, counter = 1, 0
-  while i * i <= N:
+  n_factors = 0
+  for i in range(1, int(sqrt(N)) + 1):
     if N % i == 0:
-      counter += 2
-    i += 1
-  i -= 1
+      n_factors += 2
   if i * i == N:
-    print('pow')
-    counter -= 1
-  return counter
+    n_factors -= 1
+  return n_factors
 
 
 if __name__ == '__main__':
-  cases = [24, 1, 2, 3, 4, 5, 6, 8, 9, 11, 12, 720]
+  cases = [(24,), (720,), (2147483646,), (2147483647,)]
+  for i in range(1, 14):
+    cases.append((i,))
   for c in cases:
-    print(c, solution(c))
+    print(f'\n{c = }')
+    print(f'{solution(*c) = }')
