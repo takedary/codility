@@ -1,5 +1,4 @@
 from itertools import accumulate
-import random
 
 
 def check(peaks, n_flags_taken):
@@ -83,21 +82,66 @@ def slow_solution(A):
 '''
 
 
+def solution1(A):
+  N = len(A)
+  if N <= 2:
+    return 0
+
+  def check(n_flags):
+    n_flags_to_put = n_flags
+    i = 0
+    while i in range(N) and next_peak[i] > 0:
+      i = next_peak[i]
+      n_flags_to_put -= 1
+      if n_flags_to_put == 0:
+        return True
+      i += n_flags
+
+    return False
+
+  is_peak = [A[i-1] < A[i] and A[i] > A[i+1] for i in range(1, N-1)]
+  if (n_peaks := sum(is_peak)) <= 2:
+    return n_peaks  # n_peaks >= 3 hereafter.
+  is_peak = [0] + is_peak + [0]
+
+  next_peak = []
+  last_peak = -1
+  for i, p in reversed(list(enumerate(is_peak))):
+    if p:
+      last_peak = i
+    next_peak.append(last_peak)
+  next_peak = next_peak[::-1]
+  print(next_peak)
+
+  leftmost_peak, rightmost_peak = next_peak[0], max(next_peak)
+  peak_range = rightmost_peak - leftmost_peak
+
+  for n_flags in range(n_peaks, 2, -1):
+    if n_flags * (n_flags - 1) > peak_range:
+      continue
+    if check(n_flags):
+      return n_flags
+  return 2
+
+
 if __name__ == '__main__':
+  from random import randrange
+
   cases = [
-      [1, 5, 3, 4, 3, 4, 1, 2, 3, 4, 6, 2],
-      [1, 1, 1, 1],
-      [0, 1, 0],
-      [0, 1, 0, 1, 0],
-      [0, 1, 0, 1, 0, 1, 0],
-      [4, 3, 5, 4, 3, 5, 2, 5, 4, 2, 5, 1]
+      ([1, 5, 3, 4, 3, 4, 1, 2, 3, 4, 6, 2],),
+      ([1, 1, 1, 1],),
+      ([0, 1, 0],),
+      ([0, 1, 0, 1, 0],),
+      ([0, 1, 0, 1, 0, 1, 0],),
+      ([4, 3, 5, 4, 3, 5, 2, 5, 4, 2, 5, 1],),
   ]
   for _ in range(5):
-    cases.append([random.randrange(10)
-                  for _ in range(random.randrange(20, 30))])
+    c = ([randrange(10) for _ in range(randrange(20, 30))],)
+    cases.append(c)
+
   for c in cases:
-    print('\n', c)
-    print(solution(c))
+    print(f'\n{c = }')
+    print(f'{solution1(*c) = }')
   '''
   for c in cases:
     print('\n', c)
