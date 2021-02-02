@@ -1,4 +1,5 @@
 from itertools import accumulate
+from math import sqrt
 
 
 def check(peaks, n_flags_taken):
@@ -124,6 +125,39 @@ def solution1(A):
   return 2
 
 
+def solution2(A):
+  N = len(A)
+  if N <= 2:
+    return 0
+
+  peaks = [i for i in range(1, N-1) if A[i-1] < A[i] and A[i] > A[i+1]]
+  if (n_peaks := len(peaks)) <= 2:
+    return n_peaks
+
+  max_peak_distance = peaks[-1] - peaks[0]
+  max_n_flags = int(sqrt(max_peak_distance + 0.25) + 0.5)
+
+  def check(n_flags):
+    n_flags_put = 1
+    last_peak = peaks[0]
+    for peak in peaks[1:]:
+      if peak - last_peak >= n_flags:
+        n_flags_put += 1
+        if n_flags_put == n_flags:
+          return True
+        last_peak = peak
+    return False
+
+  left, right = 2, min(max_n_flags, n_peaks) + 1
+  while right - left > 1:
+    mid = (left + right) // 2
+    if check(mid):
+      left = mid
+    else:
+      right = mid
+  return left
+
+
 if __name__ == '__main__':
   from random import randrange
 
@@ -142,6 +176,8 @@ if __name__ == '__main__':
   for c in cases:
     print(f'\n{c = }')
     print(f'{solution1(*c) = }')
+    print(f'{solution2(*c) = }')
+
   '''
   for c in cases:
     print('\n', c)
