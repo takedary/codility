@@ -112,7 +112,7 @@ def solution1(A):
       last_peak = i
     next_peak.append(last_peak)
   next_peak = next_peak[::-1]
-  print(next_peak)
+  #print(next_peak)
 
   leftmost_peak, rightmost_peak = next_peak[0], max(next_peak)
   peak_range = rightmost_peak - leftmost_peak
@@ -159,7 +159,9 @@ def solution2(A):
 
 
 if __name__ == '__main__':
-  from random import randrange
+  from math import log10
+  from random import random, randrange
+  import timeit
 
   cases = [
       ([1, 5, 3, 4, 3, 4, 1, 2, 3, 4, 6, 2],),
@@ -178,14 +180,50 @@ if __name__ == '__main__':
     print(f'{solution1(*c) = }')
     print(f'{solution2(*c) = }')
 
-  '''
-  for c in cases:
-    print('\n', c)
-    print(slow_solution(c))
-  cases = []
-  for _ in range(5):
-    cases.append(list(accumulate([random.randrange(2, 16) for _ in range(15)])))
-  for c in cases:
-    print('\n', c)
-    print(f(c))
-  '''
+
+  # speed test
+  def rand_unif(left, right):
+    return left + (right-left) * random()
+
+  def rand_logunif(left, right):
+    e = rand_unif(log10(left), log10(right))
+    return pow(10, e)
+
+  def generate_peaks(N):
+    peak_idx = int(rand_logunif(1, N-2))
+
+    max_gap = random() * (N - peak_idx)
+    while peak_idx < N - 1:
+      yield peak_idx
+      peak_idx += int(rand_logunif(2, 2 + max_gap))
+
+  def setup(N):
+    cases = []
+    for _ in range(10):
+      A = [0] * N
+      for peak_idx in generate_peaks(N):
+        A[peak_idx] = 1
+      cases.append((A,))
+    return cases
+
+  def test_golden(cases):
+    for c in cases:
+      solution1(*c)
+
+  def test_mine(cases):
+    for c in cases:
+      solution2(*c)
+
+  def run_test(name, test_str):
+    print(name)
+    globals_ = globals()
+    for N in [10**i for i in range(2, 7)]:
+      globals_['N'] = N
+      times = timeit.repeat(
+          test_str, 'cases = setup(N)', globals=globals_,
+          repeat=5, number=1
+      )
+      print(f'{N = }', '{:.6f}'.format(sum(times)/50), sep='\t')
+
+  run_test('golden', 'test_golden(cases)')
+  run_test('mine', 'test_mine(cases)')
