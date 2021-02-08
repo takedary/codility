@@ -106,6 +106,7 @@ def solution2(A):
 
 if __name__ == '__main__':
   import random
+  import timeit
 
   cases = [
       ([1, 2, 3, 4, 3, 4, 1, 2, 3, 4, 6, 2],),
@@ -127,3 +128,48 @@ if __name__ == '__main__':
     print(f'\n{c = }')
     print(f'{solution1(*c) = }')
     print(f'{solution2(*c) = }')
+
+
+  # correctness test
+  print('\n## correctness test')
+  cases = []
+  for _ in range(1000):
+    A = random.choices(range(10000), k=random.randrange(1, 1000))
+    cases.append((A,))
+  for c in cases:
+    if solution1(*c) == solution2(*c):
+      continue
+    print(f'\n{c = }')
+    print(f'{solution1(*c) = }')
+    print(f'{solution2(*c) = }')
+
+
+  # speedtest
+  print('\n## speed test')
+
+  def setup(N):
+    cases = []
+    for _ in range(10):
+      weight_1 = random.random()
+      weights = [1 - weight_1, weight_1]
+      A = random.choices([0, 1], weights=weights, k=N)
+      cases.append((A,))
+    return cases
+
+  def test_solution(solution, cases):
+    for c in cases:
+      solution(*c)
+
+  def run_test(test_str):
+    print(test_str)
+    globals_ = globals()
+    for N in [10**i for i in range(2, 6)]:
+      globals_['N'] = N
+      times = timeit.repeat(
+          test_str, 'cases = setup(N)', globals=globals_,
+          repeat=5, number=1
+      )
+      print(f'{N = }', '{:.6f}'.format(sum(times)/50), sep='\t')
+
+  run_test('test_solution(solution1, cases)')
+  run_test('test_solution(solution2, cases)')
