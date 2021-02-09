@@ -1,7 +1,9 @@
 from collections import Counter
+from math import sqrt
 
 
 def solution(A):
+  """O(N*logN)."""
   n = len(A)
   max_a = max(A)
   d = [n] * (max_a + 1)
@@ -11,13 +13,32 @@ def solution(A):
       d[i * a] -= c[a]
   return [d[a] for a in A]
 
+
 def slow_solution(A):
+  """O(N**2)."""
   ret = [0] * len(A)
   for i, a in enumerate(A):
     for aa in A:
       if a % aa != 0:
         ret[i] += 1
   return ret
+
+
+def gen_divisors(n):
+  """O(sqrt(n))."""
+  for i in range(1, int(sqrt(n)) + 1):
+    if n % i == 0:
+      yield i
+      if i * i != n:
+        yield n // i
+
+def solution1(A):
+  """O(N*sqrt(N))."""
+  N = len(A)
+  counts = Counter(A)
+
+  n_divs = {a: sum(counts[d] for d in gen_divisors(a)) for a in counts}
+  return [N - n_divs[a] for a in A]
 
 
 TEST = '''
