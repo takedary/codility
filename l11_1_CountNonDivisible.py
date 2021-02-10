@@ -41,38 +41,59 @@ def solution1(A):
   return [N - n_divs[a] for a in A]
 
 
-TEST = '''
-for c in cases:
-  {solution}(c)
-'''
-
-
 if __name__ == '__main__':
-  import random
+  from random import randrange
   import timeit
 
-  cases = [[3, 1, 2, 3, 6]]
+  cases = [
+      ([3, 1, 2, 3, 6],),
+  ]
   for _ in range(100):
-    N = random.randrange(1, 500+1)
-    cases.append([random.randrange(1, 2*N+1) for _ in range(N)])
-
-  for c in [case for case in cases if len(case) < 10]:
-    print('\n', c)
-    print('slow:', slow_solution(c), sep='\t')
-    print('mine:', solution(c), sep='\t')
+    N = randrange(1, 500+1)
+    A = [randrange(1, 2*N+1) for _ in range(N)]
+    cases.append((A,))
 
   for c in cases:
-    if solution(c) != slow_solution(c):
-      print('\nGot wrong answer on', c)
+    if len(c[0]) > 10:
+      continue
+    print(f'\n{c = }')
+    print(f'{solution(*c) = }')
+    print(f'{slow_solution(*c) = }')
+    print(f'{solution1(*c) = }')
 
-  print('\ntimeit')
-  print('slow:',
-        timeit.repeat(TEST.format(solution='slow_solution'),
-                      globals=globals(), repeat=5, number=1),
-        sep='\t'
-  )
-  print('mine:',
-        timeit.repeat(TEST.format(solution='solution'),
-                      globals=globals(), repeat=5, number=1),
-        sep='\t'
-  )
+  print('\ncollectness test')
+  for c in cases:
+    if solution(*c) == slow_solution(*c) == solution1(*c):
+      continue
+    print(f'\n{c = }')
+    print(f'{solution(*c) = }')
+    print(f'{slow_solution(*c) = }')
+    print(f'{solution1(*c) = }')
+
+  print('\nspeed test')
+
+  def setup(N):
+    cases = []
+    for _ in range(10):
+      A = [randrange(1, 2*N+1) for _ in range(N)]
+      cases.append((A,))
+    return cases
+
+  def test_solution(solution, cases):
+    for c in cases:
+      solution(*c)
+
+  def run_test(test_str, start, stop):
+    print(test_str)
+    globals_ = globals()
+    for N in [10**i for i in range(start, stop)]:
+      globals_['N'] = N
+      times = timeit.repeat(
+          test_str, 'cases = setup(N)', globals=globals_,
+          repeat=5, number=1
+      )
+      print(f'{N = }', '{:.6f}'.format(sum(times)/50), sep='\t')
+
+  run_test('test_solution(solution, cases)', 2, 6)
+  run_test('test_solution(slow_solution, cases)', 2, 4)
+  run_test('test_solution(solution1, cases)', 2, 6)
