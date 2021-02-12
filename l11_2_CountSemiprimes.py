@@ -1,3 +1,4 @@
+from collections import defaultdict
 from itertools import accumulate
 import math
 
@@ -66,6 +67,25 @@ def slow_solution(N, P, Q):
   return [pref[q] - pref[p-1] for p, q in zip(P, Q)]
 
 
+def create_f(n):
+  f = defaultdict(int)
+  for i in range(2, int(math.sqrt(n)) + 1):
+    if not f[i]:
+      for j in range(i * i, n + 1, i):
+        f.setdefault(j, i)
+  return f
+
+def solution1(N, P, Q):
+  N = max(Q)
+  f = create_f(N)
+  is_semiprime = (int(f[i] and not f[i // f[i]]) for i in range(N + 1))
+
+  # accum[i]: num of semiprimes in range(i)
+  accum = list(accumulate(is_semiprime, initial=0))
+
+  return [accum[q+1] - accum[p] for p, q in zip(P, Q)]
+
+
 if __name__ == '__main__':
   from random import randrange
   import timeit
@@ -76,6 +96,7 @@ if __name__ == '__main__':
   for c in cases:
     print(f'\n{c = }')
     print(f'{solution(*c) = }')
+    print(f'{solution1(*c) = }')
 
 
   print('\nspeed test')
@@ -106,3 +127,4 @@ if __name__ == '__main__':
 
   run_test('test_solution(solution, cases)', 2, 6)
   run_test('test_solution(slow_solution, cases)', 2, 5)
+  run_test('test_solution(solution1, cases)', 2, 6)
