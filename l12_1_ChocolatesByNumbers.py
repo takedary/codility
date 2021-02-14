@@ -18,9 +18,14 @@ def slow_solution(N, M):
 
 
 if __name__ == '__main__':
+  from random import randrange
+
+
   cases = [
       (10, 4),
+      (4, 10),
       (10, 3),
+      (3, 10),
       (947853, 4453),
       ((3**9) * (2**14), (2**14) * (2**14)),
   ]
@@ -28,3 +33,17 @@ if __name__ == '__main__':
     print('\n', c)
     print(f'{slow_solution(*c)=}')
     print(f'{solution(*c)=}')
+
+
+  # collectness test
+  cases = []
+  for _ in range(600):
+    N = randrange(1, 1000)
+    M = randrange(1, 1000)
+    cases.append((N, M))
+
+  for c in cases:
+    if solution(*c) == slow_solution(*c):
+      continue
+    print(f'{solution(*c)=}')
+    print(f'{slow_solution(*c)=}')
