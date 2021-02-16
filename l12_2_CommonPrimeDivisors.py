@@ -24,7 +24,7 @@ def has_super_primefactors(a, b):
       a = 27 = 3^3 and
       b = 24 = 2^3 x 3^1
   """
-  print('has_super_primefactors', f'{(a, b) = }')
+  #print('has_super_primefactors', f'{(a, b) = }')
   if a % b == 0:
     return True
 
@@ -35,7 +35,7 @@ def has_super_primefactors(a, b):
 
 def solution(A, B):
   def the_same(a, b):
-    print('the_same', f'{(a, b) = }')
+    #print('the_same', f'{(a, b) = }')
     if a == b:
       return True
     if min(a, b) == 1:
@@ -99,24 +99,26 @@ def slow_solution(A, B):
     4. return result of 3 is in res 1
     """
     a, b = (a, b) if a > b else (b, a)
-    print(f'{(a, b) = }')
+    #print(f'{(a, b) = }')
     if b == 1:
       return a == 1
 
     factors_b = factorize(b)
-    print(f'{factors_b = }')
+    #print(f'{factors_b = }')
     bb = reduce(lambda x, y: x * y, factors_b)
     if a % bb != 0:
       return False
 
     remained_factors_a = factorize(a // bb)
-    print(f'{remained_factors_a = }')
+    #print(f'{remained_factors_a = }')
     return remained_factors_a.issubset(factors_b)
 
   return sum(the_same(a, b) for a, b in zip(A, B))
 
 
 if __name__ == '__main__':
+  from random import randrange
+
   cases = [
       ([15], [75]),
       ([10], [30]),
@@ -131,3 +133,16 @@ if __name__ == '__main__':
     #print(f'{slow_solution(*c) = }')
     print(f'{solution(*c) = }')
     print(f'{another_solution(*c) = }')
+    print(f'{solution1(*c) = }')
+
+  cases = []
+  for _ in range(6000):
+    Z = randrange(1, 100)
+    a = [randrange(1, 100) for _ in range(Z)]
+    b = [randrange(1, 100) for _ in range(Z)]
+    cases.append((a, b))
+
+  for c in cases:
+    if solution(*c) == another_solution(*c) == solution1(*c) == slow_solution(*c):
+      continue
+    print(f'{c = }')
