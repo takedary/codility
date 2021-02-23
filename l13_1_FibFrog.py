@@ -120,4 +120,3 @@ if __name__ == '__main__':
     print(f'\n{c = }')
     print(f'{solution(*c) = }')
     print(f'{solution1(*c) = }')
-    #print(f'{solution2(*c) = }')
