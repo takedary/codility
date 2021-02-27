@@ -1,19 +1,18 @@
 def solution(A):
   N = len(A)
-  if N <= 2:
+  if N < 3:
     return 0
 
   A = sorted(A) # A.sort() is better if it's ok to mutate A.
 
   count = 0
-  for p, a in enumerate(A[:-2]):
+  for p, ap in enumerate(A[:-2]):
     r = p + 2
-    for q, b in enumerate(A[p+1:-1], p+1):
-      apb = a + b
-      while r < N and apb > A[r]:
+    for q, aq in enumerate(A[p+1:-1], p+1):
+      ap_plus_aq = ap + aq
+      while r < N and ap_plus_aq > A[r]:
         r += 1
       count += r - q - 1
-      #print(p, q, r, count)
 
   return count
 
@@ -28,10 +27,9 @@ def solution1(A):
   if N < 3:
     return 0
   A = sorted(A)
-  #print(A)
 
   count = 0
-  for p, ap in enumerate(A[:N-2]):
+  for p, ap in enumerate(A[:-2]):
     # caterpillar on q and r
     q = p + 1
     for r, ar in enumerate(A[p+2:], p+2):
