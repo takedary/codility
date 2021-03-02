@@ -1,5 +1,6 @@
 def solution(K, A):
-  length, count = 0, 0
+  length = 0
+  count = 0
   for a in A:
     length += a
     if length >= K:
