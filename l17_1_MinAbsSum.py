@@ -178,9 +178,28 @@ def super_slow_solution(A):
   return min(abs(s) for s in gen_sums())
 
 
+def solution1(A):
+  """100 %"""
+  A = [abs(a) for a in A]
+  counter = Counter(A)
+  WW = sum(A)
+  W = WW // 2
+
+  dp = {0: 0}
+  for a, c in counter.items():
+    for w in range(W - a + 1):
+      if w in dp and dp[w] < c and w + a not in dp:
+          dp[w + a] = dp[w] + 1
+    for w in dp:
+      dp[w] = 0
+
+  return WW - 2 * max(dp.keys())
+
+
 if __name__ == '__main__':
   from random import randrange
 
+  '''
   cases2 = [([randrange(-10, 10) for _ in range(10)],) for _ in range(100)]
 
   for c in cases2:
@@ -189,10 +208,15 @@ if __name__ == '__main__':
     print(f'\n{c = }')
     print(f'{solution(*c) = }')
     print(f'{super_slow_solution(*c) = }')
+  '''
 
   cases = [
+      ([],),
+      ([0],),
+      ([1],),
       ([3, 9, 4],),
       ([-3, -9, 4],),
+      ([1, 5, 2, -2],),
   ]
   for _ in range(5):
     cases.append(([randrange(-3, 3) for _ in range(3)],))
@@ -201,4 +225,16 @@ if __name__ == '__main__':
   for c in cases:
     print(f'\n{c = }')
     print(f'{solution(*c) = }')
-    print(f'{super_slow_solution(*c) = }')
+    print(f'{solution1(*c) = }')
+    #print(f'{super_slow_solution(*c) = }')
+
+  for _ in range(79):
+    N = randrange(100)
+    A = [randrange(-100, 101) for _ in range(N)]
+    cases.append((A,))
+  for c in cases:
+    if solution(*c) == solution1(*c):
+      continue
+    print(f'\n{c = }')
+    print(f'{solution(*c) = }')
+    print(f'{solution1(*c) = }')
