@@ -6,7 +6,7 @@ import sys
 def solution(A):
   """
   pull-based, dict, 2d dp
-  dp(i, w) means num of as used to make w
+  `dp[i, w]` means num of `a`s used to make `w`
   """
   def print_dp():
     print('  ', ' '.join('{:2d}'.format(w) for w in range(W//2 + 1)))
@@ -42,7 +42,7 @@ def solution(A):
 def solution_push(A):
   """
   push-based, dict, 2d dp
-  dp(i, w) means num of as used to make w
+  `dp[i, w]` means num of `a`s used to make `w`
   """
   if not A:
     return 0
@@ -68,6 +68,10 @@ def solution_push(A):
 
 
 def solution_list(A):
+  """
+  push-based, nested list, 2d dp
+  `dp[i][w]` means num of `a`s used to make `w`
+  """
   def print_dp():
     print('  ', ' '.join('{:2d}'.format(j) for j in range(W + 1)))
     for a, r in zip([0] + list(d.keys()), dp):
@@ -103,6 +107,27 @@ def solution_list(A):
   for w in range(W//2, -1, -1):
     if dp[M][w] < sys.maxsize:
       return W - 2 * w
+
+
+def solution_1d(A):
+  """
+  push-based, dict, 1d dp
+  `dp[w]` means num of `a`s used to make `w`
+  """
+  A = [abs(a) for a in A]
+  counter = Counter(A)
+  WW = sum(A)
+  W = WW // 2
+
+  dp = {0: 0}
+  for a, c in counter.items():
+    for w in range(W - a + 1):
+      if w in dp and dp[w] < c and w + a not in dp:
+          dp[w + a] = dp[w] + 1
+    for w in dp:
+      dp[w] = 0
+
+  return WW - 2 * max(dp.keys())
 
 
 def still_slow_solution(A):
@@ -178,37 +203,8 @@ def super_slow_solution(A):
   return min(abs(s) for s in gen_sums())
 
 
-def solution1(A):
-  """100 %"""
-  A = [abs(a) for a in A]
-  counter = Counter(A)
-  WW = sum(A)
-  W = WW // 2
-
-  dp = {0: 0}
-  for a, c in counter.items():
-    for w in range(W - a + 1):
-      if w in dp and dp[w] < c and w + a not in dp:
-          dp[w + a] = dp[w] + 1
-    for w in dp:
-      dp[w] = 0
-
-  return WW - 2 * max(dp.keys())
-
-
 if __name__ == '__main__':
   from random import randrange
-
-  '''
-  cases2 = [([randrange(-10, 10) for _ in range(10)],) for _ in range(100)]
-
-  for c in cases2:
-    if solution(*c) == solution_push(*c) == solution_list(*c) == slow_solution(*c) == still_slow_solution(*c) == super_slow_solution(*c):
-      continue
-    print(f'\n{c = }')
-    print(f'{solution(*c) = }')
-    print(f'{super_slow_solution(*c) = }')
-  '''
 
   cases = [
       ([],),
@@ -221,13 +217,12 @@ if __name__ == '__main__':
   for _ in range(5):
     cases.append(([randrange(-3, 3) for _ in range(3)],))
   cases.append(([randrange(-3, 3) for _ in range(10)],))
-
   for c in cases:
     print(f'\n{c = }')
     print(f'{solution(*c) = }')
     print(f'{solution1(*c) = }')
-    #print(f'{super_slow_solution(*c) = }')
 
+  print('\ncorrectness test')
   for _ in range(79):
     N = randrange(100)
     A = [randrange(-100, 101) for _ in range(N)]
